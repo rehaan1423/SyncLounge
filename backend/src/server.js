@@ -1,9 +1,13 @@
+import dns from "node:dns";
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
+
 import express from "express";
 import dotenv from "dotenv";
 import path from "path";
 
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
+import {connectDB} from "./lib/db.js"
 
 
 const app = express();
@@ -13,6 +17,7 @@ dotenv.config();
 const PORT = process.env.PORT || 3000;
 const __dirname = path.resolve();
 
+app.use(express.json());
 app.use("/api/auth",authRoutes);
 app.use("/api/message",messageRoutes);
 
@@ -26,6 +31,7 @@ if(process.env.NODE_ENV==="production"){
 
 app.listen(PORT,() =>{
     console.log("Server is Running 1235");
+    connectDB();
 })
 
 
