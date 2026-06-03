@@ -85,13 +85,51 @@ export const login = async (req, res) => {
         })
 
     } catch (error) {
-        console.error("Error in login controller",error);
-        res.status(500).json({message:"Internal Server Error"});
+        console.error("Error in login controller", error);
+        res.status(500).json({ message: "Internal Server Error" });
     }
 }
 
-export const logout = (_,res) => {
-    res.cookie("jwt","",{maxAge:0});
-    res.status(200).json({message:"Logged Out Successfully"})
+export const logout = (_, res) => {
+    res.cookie("jwt", "", { maxAge: 0 });
+    res.status(200).json({ message: "Logged Out Successfully" })
 }
+
+export const updateProfile = async (req, res) => {
+    try {
+        const { profilePic } = req.body;
+        const userId = req.user._id;
+
+        if (!profilePic) {
+            return res.status(400).json({ message: "Profile pic is required" });
+        }
+
+        const currentUser = await User.findById(userId);
+        if (!currentUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (currentUser.profilePic) {
+            try {
+                const oldPublicId = currentUser.profilePic.split("/").pop().split(".")[0];
+                await cloudinary.uploader.destroy(oldPublicId);
+            } catch (deleteError) {
+                console.error("Failed to delete old image:", deleteError.message);
+            }
+        }
+
+        const uploadResponse = await cloudinary.uploader.upload(profilePic);
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { profilePic: uploadResponse.secure_url },
+            { new: true }
+        ).select("-password");
+
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        console.error("Error in update-profile controller:", error.message);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};
 
