@@ -17,11 +17,9 @@ function SignUpPage() {
 
     return (
         <div className="w-full flex items-center justify-center p-4 bg-slate-900">
-            {/* Reduced max-width to max-w-xl for a single-column layout */}
             <div className="relative w-full max-w-xl min-h-[500px] py-8">
                 <BorderAnimatedContainer>
                     <div className="w-full flex items-center justify-center">
-                        {/* Removed md:w-1/2 and the right border classes */}
                         <div className="w-full p-8 flex items-center justify-center">
                             <div className="w-full max-w-md">
                                 {/* HEADING TEXT */}
