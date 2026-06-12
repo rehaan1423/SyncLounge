@@ -14,7 +14,7 @@ function ChatPage() {
 
     return (
         <div className="relative w-full max-w-6xl h-[800px]">
-            <BorderAnimatedContainer>
+            <BorderAnimatedContainer >
                 {/* LEFT SIDE */}
                 <div className="w-80 bg-slate-800/50 backdrop-blur-sm flex flex-col">
                     <ProfileHeader />

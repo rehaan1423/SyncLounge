@@ -4,7 +4,7 @@ import { arcjetProtection } from "../middleware/arcjet.middleware.js";
 import { getAllContacts,getMessagesByUserId,sendMessage,getConversations} from "../controllers/message.controller.js";
 
 const router = express.Router();
-router.use(protectRoute);
+router.use(arcjetProtection,protectRoute);
 
 
 router.get("/contacts",getAllContacts);

@@ -2,9 +2,11 @@ import React, { useEffect } from 'react'
 import UsersLoadingSkeleton from './UsersLoadingSkeleton.jsx';
 import  {useChatStore}  from '../store/useChatStore.js';
 import NoChatsFound from './NoChatsFound.jsx';
+import { useAuthStore } from '../store/useAuthStore.js';
 
 function ChatsList() {
   const { isUsersLoading, getConversations, chats, setSelectedUser } = useChatStore();
+  const { onlineUsers } = useAuthStore();
 
   useEffect(() => {
     getConversations()
@@ -22,7 +24,7 @@ function ChatsList() {
           onClick={() => setSelectedUser(chat)}
         >
           <div className="flex items-center gap-3">
-            <div className={`avatar online`}>
+            <div className={`avatar ${onlineUsers.includes(chat._id) ? "online" : ""}`}>
               <div className="size-12 rounded-full">
                 <img src={chat.profilePic || "/avatar.png"} alt={chat.fullName} />
               </div>
