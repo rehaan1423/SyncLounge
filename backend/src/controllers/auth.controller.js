@@ -40,7 +40,7 @@ export const signup = async (req, res) => {
             generateToken(savedUser._id, res);
 
             res.status(201).json({
-                id: newUser._id,
+                _id: newUser._id,
                 fullName: newUser.fullName,
                 email: newUser.email,
                 profilePic: newUser.profilePic
@@ -79,7 +79,7 @@ export const login = async (req, res) => {
 
         generateToken(user._id, res);
         res.status(201).json({
-            id: user._id,
+            _id: user._id,
             fullName: user.fullName,
             email: user.email,
             profilePic: user.profilePic

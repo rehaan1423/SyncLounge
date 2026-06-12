@@ -1,16 +1,31 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useAuthStore } from "../store/useAuthStore.js";
 import { useChatStore } from "../store/useChatStore.js";
 import ChatHeader from "./ChatHeader.jsx";
 import NoChatHistoryPlaceholder from "./NoChatHistoryPlaceHolder.jsx";
+import MessageInput from "./MessageInput.jsx";
 
 function ChatContainer() {
-  const { selectedUser, getMessagesByUserId, messages,isMessagesLoading } = useChatStore();
+  const { selectedUser, getMessagesByUserId, messages, isMessagesLoading, subscribeToMessages, unsubscribeFromMessages } = useChatStore();
   const { authUser } = useAuthStore();
+
+  const messageEndRef = useRef(null);
 
   useEffect(() => {
     getMessagesByUserId(selectedUser._id);
-  }, [selectedUser, getMessagesByUserId]);
+    subscribeToMessages();
+
+    return unsubscribeFromMessages
+  }, [selectedUser, getMessagesByUserId, subscribeToMessages, unsubscribeFromMessages]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (messageEndRef.current) {
+        messageEndRef.current.scrollIntoView({ behavior: "auto" });
+      }
+    }, 10);
+  }, [messages]);
+
 
   if (isMessagesLoading) {
     return (
@@ -22,7 +37,6 @@ function ChatContainer() {
       </>
     )
   }
-
   return (
     <>
       <ChatHeader />
@@ -46,17 +60,22 @@ function ChatContainer() {
                     )}
                     {msg.text && <p className="mt-2">{msg.text}</p>}
                     <p className="text-xs mt-1 opacity-75 flex items-center gap-1">
-                      {new Date(msg.createdAt).toISOString().slice(11, 16)}
+                      {new Date(msg.createdAt).toLocaleTimeString(undefined, {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </p>
                   </div>
                 </div>
               ))}
+              {/* <div ref={messageEndRef}></div> */}
             </div>
           ) : (
             <NoChatHistoryPlaceholder name={selectedUser.fullName} />
           )
         }
       </div>
+      <MessageInput />
     </>
   );
 }
